@@ -326,7 +326,7 @@ elif sector == "Livestock":
         max_value=5.0,
         value=2.5
     )
-    )
+    
 
     # =====================================================
     # ANIMAL HEALTH
