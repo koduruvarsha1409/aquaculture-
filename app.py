@@ -313,11 +313,12 @@ elif sector == "Livestock":
     if sector == "Livestock":
         st.subheader("🐄 Livestock Information")
 
-    animal_size = st.number_input(
-        "Animal Size",
-        min_value=1.0,
-        value=300.0
-    )
+   animal_count = st.number_input(
+    "Animal Count",
+    min_value=1,
+    max_value=10000,
+    value=10
+)
 
     body_condition_score = st.number_input(
         "Body Condition Score",
