@@ -18,7 +18,7 @@ st.set_page_config(
 # LOAD MODEL
 # ============================================================
 
-MODEL_FILE = "aquaculture_livestock_best_model.pkl"
+MODEL_FILE = "aquaculture_livestock_best_model_new.pkl"
 
 try:
     model = joblib.load(MODEL_FILE)
