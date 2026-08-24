@@ -311,22 +311,26 @@ elif sector == "Livestock":
         )
 
     if sector == "Livestock":
-        st.subheader("🐄 Livestock Information")
+    st.subheader("🐄 Livestock Information")
 
-   animal_count = st.number_input(
-    "Animal Count",
-    min_value=1,
-    max_value=10000,
-    value=10
-)
-
-    body_condition_score = st.number_input(
-        "Body Condition Score",
-        min_value=0.0,
-        max_value=5.0,
-        value=2.5
+    animal_count = st.number_input(
+        "Animal Count",
+        min_value=1,
+        max_value=10000,
+        value=10
     )
-    
+
+    age = st.number_input(
+        "Animal Age (years)",
+        min_value=0.0,
+        max_value=30.0,
+        value=3.0
+    )
+
+    feed_type = st.selectbox(
+        "Feed Type",
+        ["Grass", "Hay", "Silage", "Concentrate", "Mixed"]
+    )
 
     # =====================================================
     # ANIMAL HEALTH
