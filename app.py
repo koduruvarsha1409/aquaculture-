@@ -310,10 +310,22 @@ elif sector == "Livestock":
             value=4.0
         )
 
-    farm_area = st.number_input(
-        "Farm Area (Acres)",
-        min_value=0.1,
-        value=5.2
+    if sector == "Livestock":
+
+    st.subheader("🐄 Livestock Information")
+
+    animal_size = st.number_input(
+        "Animal Size (kg)",
+        min_value=1.0,
+        value=300.0
+    )
+
+    body_condition_score = st.number_input(
+        "Body Condition Score",
+        min_value=0.0,
+        max_value=5.0,
+        value=2.5
+    )
     )
 
     # =====================================================
