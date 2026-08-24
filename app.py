@@ -311,7 +311,6 @@ elif sector == "Livestock":
         )
 
     if sector == "Livestock":
-
     st.subheader("🐄 Livestock Information")
 
     animal_size = st.number_input(
