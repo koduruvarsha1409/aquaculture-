@@ -314,7 +314,7 @@ elif sector == "Livestock":
         st.subheader("🐄 Livestock Information")
 
     animal_size = st.number_input(
-        "Animal Size (kg)",
+        "Animal Size",
         min_value=1.0,
         value=300.0
     )
