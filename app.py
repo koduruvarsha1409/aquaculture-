@@ -5,7 +5,7 @@ import joblib
 import os
 
 import streamlit as st
-
+disease_model = None
 st.set_page_config(
     page_title="Aquaculture & Livestock Disease Risk Classification",
     page_icon="🐟",
