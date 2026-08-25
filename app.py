@@ -246,7 +246,7 @@ if sector == "Aquaculture":
 
     if st.button("🔍 Assess Aquaculture Disease Risk"):
 
-    st.success("Aquaculture information submitted successfully!")
+        st.success("Aquaculture information submitted successfully!")
 
     # Create input data
     input_data = pd.DataFrame([{
