@@ -261,7 +261,16 @@ if sector == "Aquaculture":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
+        # Risk Level
+        if disease_type == "No Disease" and disease_onset == "No" and mortality_rate == 0:
+            risk_level = "LOW"
+        elif mortality_rate >= 10 or disease_onset == "Yes":
+            risk_level = "HIGH"
+        else:
+            risk_level = "MEDIUM"
 
+        st.write("### 🎯 Risk Assessment")
+        st.write(f"**Risk Level: {risk_level}**")
 
 # =========================================================
 # LIVESTOCK
