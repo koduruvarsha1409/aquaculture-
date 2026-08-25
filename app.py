@@ -261,6 +261,45 @@ if sector == "Aquaculture":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
+        st.write("### 🎯 Risk Assessment")
+
+        if prediction.lower() == "low":
+
+            st.success(
+                "🟢 **Risk Level: LOW**"
+            )
+
+        elif prediction.lower() == "medium":
+
+            st.warning(
+                "🟡 **Risk Level: MEDIUM**"
+            )
+
+        elif prediction.lower() == "high":
+
+            st.error(
+                "🔴 **Risk Level: HIGH**"
+            )
+
+        else:
+
+            st.info(
+                f"Risk Level: {prediction}"
+            )
+
+        # Disease message
+
+        if disease_type == "No Disease":
+
+            st.info(
+                "✅ No disease reported."
+            )
+
+        else:
+
+            st.warning(
+                f"⚠️ Reported disease: {disease_type}"
+            )
 
 
 # =========================================================
@@ -467,9 +506,42 @@ elif sector == "Livestock":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
-        if disease_type == "No Disease" and mortality_rate == 0:
-    risk_level = "Low"
-elif mortality_rate > 5:
-    risk_level = "High"
-else:
-    risk_level = "Medium"
+        st.write("### 🎯 Risk Assessment")
+
+        if prediction.lower() == "low":
+
+            st.success(
+                "🟢 **Risk Level: LOW**"
+            )
+
+        elif prediction.lower() == "medium":
+
+            st.warning(
+                "🟡 **Risk Level: MEDIUM**"
+            )
+
+        elif prediction.lower() == "high":
+
+            st.error(
+                "🔴 **Risk Level: HIGH**"
+            )
+
+        else:
+
+            st.info(
+                f"Risk Level: {prediction}"
+            )
+
+        # Disease message
+
+        if disease_type == "No Disease":
+
+            st.info(
+                "✅ No disease reported."
+            )
+
+        else:
+
+            st.warning(
+                f"⚠️ Reported disease: {disease_type}"
+            )
