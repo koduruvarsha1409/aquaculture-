@@ -496,50 +496,101 @@ if sector == "Livestock":
     # BUTTON
     # =====================================================
 
-    if st.button("🔍 Assess Livestock Disease Risk"):
+        if st.button("🔍 Assess Livestock Disease Risk"):
 
-        st.success("Livestock information submitted successfully!")
+        # ================================================
+        # CREATE INPUT DATA
+        # ================================================
+
+        input_data = pd.DataFrame([{
+            "Sector": "Livestock",
+            "Species": species,
+            "State": state,
+            "Farm_Age_Years": farm_age,
+            "Farm_Area_Acres": np.nan,
+            "Water_Temperature_C": np.nan,
+            "Water_pH": np.nan,
+            "Dissolved_Oxygen_mg_L": np.nan,
+            "Ammonia_mg_L": np.nan,
+            "Stocking_Density_Animals_Per_Acre": np.nan,
+            "Feed_Quantity_kg_Per_Day": feed_quantity,
+            "Feed_Quality_Score": feed_quality,
+            "Rainfall_mm": rainfall,
+            "Humidity_Percent": humidity,
+            "Body_Condition_Score": body_condition,
+            "Disease_Type": disease_type,
+            "Disease_Onset": disease_onset,
+            "Mortality_Rate_Percent": mortality_rate,
+            "Feed_Conversion_Ratio": feed_conversion,
+            "Daily_Feed_Cost": daily_feed_cost,
+            "Productivity_Score": productivity_score,
+            "Water_Quality_Score": np.nan
+        }])
+
+        # ================================================
+        # PREDICT
+        # ================================================
+
+        input_data = input_data[model_features]
+
+        prediction = model.predict(input_data)[0]
+        prediction = str(prediction).strip()
+
+        # ================================================
+        # DISPLAY INFORMATION
+        # ================================================
+
+        st.success(
+            "Livestock information submitted successfully!"
+        )
 
         st.write("### 🦠 Disease Information")
 
-        st.write(f"**Disease Type:** {disease_type}")
-        st.write(f"**Disease Onset:** {disease_onset}")
-        st.write(f"**Mortality Rate:** {mortality_rate}%")
+        st.write(
+            f"**Disease Type:** {disease_type}"
+        )
 
-        if disease_type == "No Disease":
-            st.info("✅ No disease reported.")
-        else:
-            st.warning(
-                f"⚠️ Reported disease: {disease_type}"
+        st.write(
+            f"**Disease Onset:** {disease_onset}"
+        )
+
+        st.write(
+            f"**Mortality Rate:** {mortality_rate}%"
+        )
+
+        # ================================================
+        # RISK ASSESSMENT
+        # ================================================
+
+        st.write("### 🎯 Risk Assessment")
+
+        if prediction.lower() == "low":
+
+            st.success(
+                "🟢 **Risk Level: LOW**"
             )
-       st.write("### 🎯 Risk Assessment")
 
-if prediction.lower() == "low":
+        elif prediction.lower() == "medium":
 
-    st.success(
-        "🟢 **Risk Level: LOW**"
-    )
+            st.warning(
+                "🟡 **Risk Level: MEDIUM**"
+            )
 
-elif prediction.lower() == "medium":
+        elif prediction.lower() == "high":
 
-    st.warning(
-        "🟡 **Risk Level: MEDIUM**"
-    )
+            st.error(
+                "🔴 **Risk Level: HIGH**"
+            )
 
-elif prediction.lower() == "high":
+        else:
 
-    st.error(
-        "🔴 **Risk Level: HIGH**"
-    )
+            st.info(
+                f"Risk Level: {prediction}"
+            )
 
-else:
-
-    st.info(
-        f"Risk Level: {prediction}"
-    )
-
-
-        # Disease message
+        # ================================================
+        # DISEASE MESSAGE
+        # ================================================
 
         if disease_type == "No Disease":
 
