@@ -261,49 +261,42 @@ if sector == "Aquaculture":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
-        # Make prediction using the trained model
-        prediction = model.predict(input_data)[0]
-        prediction = str(prediction).strip()
+        # =====================================================
+# MAKE RISK PREDICTION
+# =====================================================
 
-        st.write("### 🎯 Risk Assessment")
+prediction = model.predict(input_data)[0]
+prediction = str(prediction).strip()
 
-        if prediction.lower() == "low":
+# =====================================================
+# DISPLAY RISK LEVEL
+# =====================================================
 
-            st.success(
-                "🟢 **Risk Level: LOW**"
-            )
+st.write("### 🎯 Risk Assessment")
 
-        elif prediction.lower() == "medium":
+if prediction.lower() == "low":
 
-            st.warning(
-                "🟡 **Risk Level: MEDIUM**"
-            )
+    st.success(
+        "🟢 **Risk Level: LOW**"
+    )
 
-        elif prediction.lower() == "high":
+elif prediction.lower() == "medium":
 
-            st.error(
-                "🔴 **Risk Level: HIGH**"
-            )
+    st.warning(
+        "🟡 **Risk Level: MEDIUM**"
+    )
 
-        else:
+elif prediction.lower() == "high":
 
-            st.info(
-                f"Risk Level: {prediction}"
-            )
+    st.error(
+        "🔴 **Risk Level: HIGH**"
+    )
 
-        # Disease message
+else:
 
-        if disease_type == "No Disease":
-
-            st.info(
-                "✅ No disease reported."
-            )
-
-        else:
-
-            st.warning(
-                f"⚠️ Reported disease: {disease_type}"
-            )
+    st.info(
+        f"Risk Level: {prediction}"
+    )
 
 
 # =========================================================
