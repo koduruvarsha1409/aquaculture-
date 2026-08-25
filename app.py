@@ -302,7 +302,7 @@ else:
 # =========================================================
 # LIVESTOCK
 # =========================================================
-elif sector == "Livestock":
+if sector == "Livestock":
 
     st.header("🐄 Livestock Information")
 
