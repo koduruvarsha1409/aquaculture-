@@ -496,7 +496,7 @@ if sector == "Livestock":
     # BUTTON
     # =====================================================
 
-        if st.button("🔍 Assess Livestock Disease Risk"):
+    if st.button("🔍 Assess Livestock Disease Risk"):
 
         # ================================================
         # CREATE INPUT DATA
