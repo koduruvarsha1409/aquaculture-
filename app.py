@@ -272,7 +272,7 @@ if sector == "Aquaculture":
         "Water_Quality_Score": water_quality_score
     }])
 
-    if disease_model None:
+    if disease_model is not None:
 
         try:
             prediction = disease_model.predict(input_data)[0]
