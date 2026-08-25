@@ -262,10 +262,10 @@ if sector == "Aquaculture":
                 f"⚠️ Reported disease: {disease_type}"
             )
         # Make prediction using the trained model
-prediction = model.predict(input_data)[0]
-prediction = str(prediction).strip()
+        prediction = model.predict(input_data)[0]
+        prediction = str(prediction).strip()
 
-st.write("### 🎯 Risk Assessment")
+        st.write("### 🎯 Risk Assessment")
 
         if prediction.lower() == "low":
 
