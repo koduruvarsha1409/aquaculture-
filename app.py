@@ -261,23 +261,6 @@ if sector == "Aquaculture":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
-# =====================================================
-# RISK ASSESSMENT
-# =====================================================
-
-st.write("### 🎯 Risk Assessment")
-
-if prediction.lower() == "low":
-    st.success("🟢 Risk Level: LOW")
-
-elif prediction.lower() == "medium":
-    st.warning("🟡 Risk Level: MEDIUM")
-
-elif prediction.lower() == "high":
-    st.error("🔴 Risk Level: HIGH")
-
-else:
-    st.info(f"Risk Level: {prediction}")
 
 
 # =========================================================
