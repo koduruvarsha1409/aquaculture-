@@ -484,7 +484,7 @@ elif sector == "Livestock":
 
     if st.button("🔍 Assess Livestock Disease Risk"):
 
-    st.success("Livestock information submitted successfully!")
+        st.success("Livestock information submitted successfully!")
 
     # Water-quality fields are not applicable to livestock
     input_data = pd.DataFrame([{
