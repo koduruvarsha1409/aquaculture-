@@ -467,4 +467,9 @@ elif sector == "Livestock":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
-
+        if disease_type == "No Disease" and mortality_rate == 0:
+    risk_level = "Low"
+elif mortality_rate > 5:
+    risk_level = "High"
+else:
+    risk_level = "Medium"
