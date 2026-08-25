@@ -37,30 +37,41 @@ except Exception as e:
 # MODEL FEATURES
 # =========================================================
 
-model_features = [
-    "Sector",
-    "Species",
-    "State",
-    "Farm_Age_Years",
-    "Farm_Area_Acres",
-    "Water_Temperature_C",
-    "Water_pH",
-    "Dissolved_Oxygen_mg_L",
-    "Ammonia_mg_L",
-    "Stocking_Density_Animals_Per_Acre",
-    "Feed_Quantity_kg_Per_Day",
-    "Feed_Quality_Score",
-    "Rainfall_mm",
-    "Humidity_Percent",
-    "Body_Condition_Score",
-    "Disease_Type",
-    "Disease_Onset",
-    "Mortality_Rate_Percent",
-    "Feed_Conversion_Ratio",
-    "Daily_Feed_Cost",
-    "Productivity_Score",
-    "Water_Quality_Score"
-]
+# =========================================================
+# GET FEATURES EXPECTED BY THE TRAINED MODEL
+# =========================================================
+
+if hasattr(model, "feature_names_in_"):
+
+    model_features = list(model.feature_names_in_)
+
+else:
+
+    model_features = [
+        "Sector",
+        "Species",
+        "State",
+        "Farm_Age_Years",
+        "Farm_Area_Acres",
+        "Water_Temperature_C",
+        "Water_pH",
+        "Dissolved_Oxygen_mg_L",
+        "Ammonia_mg_L",
+        "Stocking_Density_Animals_Per_Acre",
+        "Feed_Quantity_kg_Per_Day",
+        "Feed_Quality_Score",
+        "Rainfall_mm",
+        "Humidity_Percent",
+        "Body_Condition_Score",
+        "Disease_Type",
+        "Disease_Onset",
+        "Mortality_Rate_Percent",
+        "Feed_Conversion_Ratio",
+        "Daily_Feed_Cost",
+        "Productivity_Score",
+        "Water_Quality_Score",
+        "Disease_Risk_Score"
+    ]
 
 
 # =========================================================
