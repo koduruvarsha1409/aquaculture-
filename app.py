@@ -246,22 +246,53 @@ if sector == "Aquaculture":
 
     if st.button("🔍 Assess Aquaculture Disease Risk"):
 
-        st.success("Aquaculture information submitted successfully!")
+    st.success("Aquaculture information submitted successfully!")
 
-        st.write("### 🦠 Disease Information")
+    # Create input data
+    input_data = pd.DataFrame([{
+        "Sector": sector,
+        "Species": species,
+        "State": state,
+        "Farm_Age_Years": farm_age,
+        "Farm_Area_Acres": farm_area,
+        "Water_Temperature_C": water_temperature,
+        "Water_pH": water_ph,
+        "Dissolved_Oxygen_mg_L": dissolved_oxygen,
+        "Ammonia_mg_L": ammonia,
+        "Rainfall_mm": rainfall,
+        "Humidity_Percent": humidity,
+        "Feed_Quantity_kg_Per_Day": feed_quantity,
+        "Feed_Quality_Score": feed_quality,
+        "Feed_Conversion_Ratio": feed_conversion,
+        "Daily_Feed_Cost": daily_feed_cost,
+        "Disease_Type": disease_type,
+        "Disease_Onset": disease_onset,
+        "Mortality_Rate_Percent": mortality_rate,
+        "Productivity_Score": productivity_score,
+        "Water_Quality_Score": water_quality_score
+    }])
 
-        st.write(f"**Disease Type:** {disease_type}")
-        st.write(f"**Disease Onset:** {disease_onset}")
-        st.write(f"**Mortality Rate:** {mortality_rate}%")
+    if disease_model is not None:
 
-        # Simple display logic
-        if disease_type == "No Disease":
-            st.info("✅ No disease reported.")
-        else:
-            st.warning(
-                f"⚠️ Reported disease: {disease_type}"
-            )
+        try:
+            prediction = disease_model.predict(input_data)[0]
 
+            st.subheader("🦠 Disease Risk Level")
+
+            if str(prediction).lower() == "high":
+                st.error("🔴 HIGH RISK")
+
+            elif str(prediction).lower() == "medium":
+                st.warning("🟡 MEDIUM RISK")
+
+            elif str(prediction).lower() == "low":
+                st.success("🟢 LOW RISK")
+
+            else:
+                st.info(f"Predicted Disease Risk Level: {prediction}")
+
+        except Exception as e:
+            st.error(f"Prediction error: {e}")
 
 # =========================================================
 # LIVESTOCK
@@ -453,19 +484,52 @@ elif sector == "Livestock":
 
     if st.button("🔍 Assess Livestock Disease Risk"):
 
-        st.success("Livestock information submitted successfully!")
+    st.success("Livestock information submitted successfully!")
 
-        st.write("### 🦠 Disease Information")
+    # Water-quality fields are not applicable to livestock
+    input_data = pd.DataFrame([{
+        "Sector": sector,
+        "Species": species,
+        "State": state,
+        "Farm_Age_Years": farm_age,
+        "Farm_Area_Acres": 0,
+        "Water_Temperature_C": np.nan,
+        "Water_pH": np.nan,
+        "Dissolved_Oxygen_mg_L": np.nan,
+        "Ammonia_mg_L": np.nan,
+        "Rainfall_mm": rainfall,
+        "Humidity_Percent": humidity,
+        "Feed_Quantity_kg_Per_Day": feed_quantity,
+        "Feed_Quality_Score": feed_quality,
+        "Feed_Conversion_Ratio": feed_conversion,
+        "Daily_Feed_Cost": daily_feed_cost,
+        "Disease_Type": disease_type,
+        "Disease_Onset": disease_onset,
+        "Mortality_Rate_Percent": mortality_rate,
+        "Productivity_Score": productivity_score,
+        "Water_Quality_Score": np.nan
+    }])
 
-        st.write(f"**Disease Type:** {disease_type}")
-        st.write(f"**Disease Onset:** {disease_onset}")
-        st.write(f"**Mortality Rate:** {mortality_rate}%")
+    if disease_model is not None:
 
-        if disease_type == "No Disease":
-            st.info("✅ No disease reported.")
-        else:
-            st.warning(
-                f"⚠️ Reported disease: {disease_type}"
-            )
+        try:
+            prediction = disease_model.predict(input_data)[0]
+
+            st.subheader("🦠 Disease Risk Level")
+
+            if str(prediction).lower() == "high":
+                st.error("🔴 HIGH RISK")
+
+            elif str(prediction).lower() == "medium":
+                st.warning("🟡 MEDIUM RISK")
+
+            elif str(prediction).lower() == "low":
+                st.success("🟢 LOW RISK")
+
+            else:
+                st.info(f"Predicted Disease Risk Level: {prediction}")
+
+        except Exception as e:
+            st.error(f"Prediction error: {e}")
 
     # Livestock prediction here
