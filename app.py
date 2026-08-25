@@ -10,79 +10,94 @@ import os
 # =========================================================
 
 st.set_page_config(
-    page_title="Aquaculture & Livestock Disease Risk Classification",
+    page_title="Aquaculture & Livestock Disease Risk",
     page_icon="🐟",
     layout="wide"
 )
 
 
 # =========================================================
-# LOAD TRAINED MODEL
+# LOAD MODEL
 # =========================================================
 
 MODEL_PATH = os.path.join(
     os.path.dirname(__file__),
-    "aquaculture_livestock_best_model_new.pkl"
+    "aquaculture_livestock_best_model_corrected.pkl"
 )
 
 try:
     model = joblib.load(MODEL_PATH)
+
+except FileNotFoundError:
+
+    st.error(
+        "❌ Corrected model file not found."
+    )
+
+    st.info(
+        "Please place 'aquaculture_livestock_best_model_corrected.pkl' "
+        "in the same folder as app.py."
+    )
+
+    st.stop()
+
 except Exception as e:
-    st.error("❌ Unable to load the trained model.")
-    st.error(f"Error: {e}")
+
+    st.error(
+        "❌ Unable to load the model."
+    )
+
+    st.code(str(e))
+
     st.stop()
 
 
 # =========================================================
-# MODEL FEATURES
+# MODEL INPUT FEATURES
+#
+# IMPORTANT:
+# Disease_Risk_Score is intentionally NOT included.
+# Disease_Risk_Level is the prediction target.
+# Farm_ID is also not used for prediction.
 # =========================================================
 
-# =========================================================
-# GET FEATURES EXPECTED BY THE TRAINED MODEL
-# =========================================================
-
-if hasattr(model, "feature_names_in_"):
-
-    model_features = list(model.feature_names_in_)
-
-else:
-
-    model_features = [
-        "Sector",
-        "Species",
-        "State",
-        "Farm_Age_Years",
-        "Farm_Area_Acres",
-        "Water_Temperature_C",
-        "Water_pH",
-        "Dissolved_Oxygen_mg_L",
-        "Ammonia_mg_L",
-        "Stocking_Density_Animals_Per_Acre",
-        "Feed_Quantity_kg_Per_Day",
-        "Feed_Quality_Score",
-        "Rainfall_mm",
-        "Humidity_Percent",
-        "Body_Condition_Score",
-        "Disease_Type",
-        "Disease_Onset",
-        "Mortality_Rate_Percent",
-        "Feed_Conversion_Ratio",
-        "Daily_Feed_Cost",
-        "Productivity_Score",
-        "Water_Quality_Score",
-        "Disease_Risk_Score"
-    ]
+MODEL_FEATURES = [
+    "Sector",
+    "Species",
+    "State",
+    "Farm_Age_Years",
+    "Farm_Area_Acres",
+    "Water_Temperature_C",
+    "Water_pH",
+    "Dissolved_Oxygen_mg_L",
+    "Ammonia_mg_L",
+    "Stocking_Density_Animals_Per_Acre",
+    "Feed_Quantity_kg_Per_Day",
+    "Feed_Quality_Score",
+    "Rainfall_mm",
+    "Humidity_Percent",
+    "Body_Condition_Score",
+    "Disease_Type",
+    "Disease_Onset",
+    "Mortality_Rate_Percent",
+    "Feed_Conversion_Ratio",
+    "Daily_Feed_Cost",
+    "Productivity_Score",
+    "Water_Quality_Score"
+]
 
 
 # =========================================================
 # TITLE
 # =========================================================
 
-st.title("🐟 Aquaculture & Livestock Disease Risk Classification")
+st.title(
+    "🐟 Aquaculture & Livestock Disease Risk Classification"
+)
 
 st.write(
     "Enter farm, environmental, feed and disease information "
-    "to assess disease risk."
+    "to assess the predicted disease risk."
 )
 
 
@@ -93,9 +108,26 @@ st.write(
 st.sidebar.header("🏠 Farm Information")
 
 sector = st.sidebar.selectbox(
-    "Sector",
-    ["Aquaculture", "Livestock"]
+    "Select Sector",
+    [
+        "Aquaculture",
+        "Livestock"
+    ]
 )
+
+
+# =========================================================
+# COMMON STATE OPTIONS
+# =========================================================
+
+states = [
+    "Andhra Pradesh",
+    "Karnataka",
+    "Tamil Nadu",
+    "Kerala",
+    "West Bengal",
+    "Odisha"
+]
 
 
 # =========================================================
@@ -110,9 +142,12 @@ if sector == "Aquaculture":
     # BASIC FARM INFORMATION
     # =====================================================
 
+    st.subheader("🏠 Farm Details")
+
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         species = st.selectbox(
             "Species",
             [
@@ -125,29 +160,26 @@ if sector == "Aquaculture":
         )
 
     with col2:
+
         state = st.selectbox(
             "State",
-            [
-                "Andhra Pradesh",
-                "Karnataka",
-                "Tamil Nadu",
-                "Kerala",
-                "West Bengal",
-                "Odisha"
-            ]
+            states
         )
 
     with col3:
+
         farm_age = st.number_input(
             "Farm Age (Years)",
             min_value=0.0,
             max_value=100.0,
-            value=4.0
+            value=4.0,
+            step=1.0
         )
 
     farm_area = st.number_input(
         "Farm Area (Acres)",
         min_value=0.1,
+        max_value=10000.0,
         value=5.2
     )
 
@@ -160,32 +192,41 @@ if sector == "Aquaculture":
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         water_temperature = st.number_input(
             "Water Temperature (°C)",
             value=29.5
         )
 
     with col2:
+
         water_ph = st.number_input(
             "Water pH",
+            min_value=0.0,
+            max_value=14.0,
             value=7.4
         )
 
     with col3:
+
         dissolved_oxygen = st.number_input(
             "Dissolved Oxygen (mg/L)",
+            min_value=0.0,
             value=5.2
         )
 
     col1, col2 = st.columns(2)
 
     with col1:
+
         ammonia = st.number_input(
             "Ammonia (mg/L)",
+            min_value=0.0,
             value=0.30
         )
 
     with col2:
+
         water_quality_score = st.number_input(
             "Water Quality Score",
             min_value=0.0,
@@ -194,7 +235,7 @@ if sector == "Aquaculture":
         )
 
     # =====================================================
-    # STOCKING & FEED
+    # STOCKING AND FEED
     # =====================================================
 
     st.subheader("🌾 Stocking & Feed")
@@ -202,18 +243,23 @@ if sector == "Aquaculture":
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         stocking_density = st.number_input(
             "Stocking Density (Animals/Acre)",
+            min_value=0.0,
             value=50.0
         )
 
     with col2:
+
         feed_quantity = st.number_input(
             "Feed Quantity (kg/day)",
+            min_value=0.0,
             value=30.0
         )
 
     with col3:
+
         feed_quality = st.number_input(
             "Feed Quality Score",
             min_value=0.0,
@@ -224,12 +270,15 @@ if sector == "Aquaculture":
     col1, col2 = st.columns(2)
 
     with col1:
+
         feed_conversion = st.number_input(
             "Feed Conversion Ratio",
+            min_value=0.0,
             value=1.60
         )
 
     with col2:
+
         daily_feed_cost = st.number_input(
             "Daily Feed Cost",
             min_value=0.0,
@@ -245,12 +294,15 @@ if sector == "Aquaculture":
     col1, col2 = st.columns(2)
 
     with col1:
+
         rainfall = st.number_input(
             "Rainfall (mm)",
+            min_value=0.0,
             value=50.0
         )
 
     with col2:
+
         humidity = st.number_input(
             "Humidity (%)",
             min_value=0.0,
@@ -259,10 +311,10 @@ if sector == "Aquaculture":
         )
 
     # =====================================================
-    # DISEASE INFORMATION
+    # DISEASE
     # =====================================================
 
-    st.subheader("🦠 Aquaculture Disease Information")
+    st.subheader("🦠 Disease Information")
 
     disease_type = st.selectbox(
         "Disease Type",
@@ -275,21 +327,25 @@ if sector == "Aquaculture":
         ]
     )
 
-    col1, col2 = st.columns(2)
+    disease_onset_text = st.selectbox(
+        "Disease Onset",
+        [
+            "No",
+            "Yes"
+        ]
+    )
 
-    with col1:
-        disease_onset = st.selectbox(
-            "Disease Onset",
-            ["No", "Yes"]
-        )
+    if disease_onset_text == "Yes":
+        disease_onset = 1
+    else:
+        disease_onset = 0
 
-    with col2:
-        mortality_rate = st.number_input(
-            "Mortality Rate (%)",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0
-        )
+    mortality_rate = st.number_input(
+        "Mortality Rate (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=0.0
+    )
 
     # =====================================================
     # PRODUCTIVITY
@@ -305,7 +361,7 @@ if sector == "Aquaculture":
     )
 
     # =====================================================
-    # AQUACULTURE BUTTON
+    # PREDICTION BUTTON
     # =====================================================
 
     if st.button(
@@ -379,18 +435,10 @@ if sector == "Aquaculture":
         }])
 
         # =================================================
-        # SELECT MODEL FEATURES
+        # REORDER COLUMNS
         # =================================================
 
-        try:
-
-            input_data = input_data[model_features]
-
-        except Exception as e:
-
-            st.error("❌ Error while preparing model input.")
-            st.error(str(e))
-            st.stop()
+        input_data = input_data[MODEL_FEATURES]
 
         # =================================================
         # MAKE PREDICTION
@@ -404,46 +452,31 @@ if sector == "Aquaculture":
 
         except Exception as e:
 
-            st.error("❌ Model prediction failed.")
-            st.error(str(e))
+            st.error(
+                "❌ Model prediction failed."
+            )
 
-            st.write("### Input Data Sent to Model")
+            st.code(str(e))
+
+            st.write(
+                "### Data sent to the model"
+            )
 
             st.dataframe(input_data)
 
             st.stop()
 
         # =================================================
-        # SUCCESS MESSAGE
+        # DISPLAY RESULT
         # =================================================
 
         st.success(
             "✅ Aquaculture information submitted successfully!"
         )
 
-        # =================================================
-        # DISEASE INFORMATION
-        # =================================================
-
-        st.write("### 🦠 Disease Information")
-
         st.write(
-            f"**Disease Type:** {disease_type}"
+            "### 🎯 Disease Risk Assessment"
         )
-
-        st.write(
-            f"**Disease Onset:** {disease_onset}"
-        )
-
-        st.write(
-            f"**Mortality Rate:** {mortality_rate}%"
-        )
-
-        # =================================================
-        # RISK ASSESSMENT
-        # =================================================
-
-        st.write("### 🎯 Risk Assessment")
 
         if prediction.lower() == "low":
 
@@ -470,8 +503,24 @@ if sector == "Aquaculture":
             )
 
         # =================================================
-        # DISEASE MESSAGE
+        # DISEASE DETAILS
         # =================================================
+
+        st.write(
+            "### 🦠 Disease Information"
+        )
+
+        st.write(
+            f"**Disease Type:** {disease_type}"
+        )
+
+        st.write(
+            f"**Disease Onset:** {disease_onset_text}"
+        )
+
+        st.write(
+            f"**Mortality Rate:** {mortality_rate}%"
+        )
 
         if disease_type == "No Disease":
 
@@ -498,6 +547,8 @@ elif sector == "Livestock":
     # BASIC FARM INFORMATION
     # =====================================================
 
+    st.subheader("🏠 Farm Details")
+
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -517,14 +568,7 @@ elif sector == "Livestock":
 
         state = st.selectbox(
             "State",
-            [
-                "Andhra Pradesh",
-                "Karnataka",
-                "Tamil Nadu",
-                "Kerala",
-                "West Bengal",
-                "Odisha"
-            ]
+            states
         )
 
     with col3:
@@ -533,22 +577,42 @@ elif sector == "Livestock":
             "Farm Age (Years)",
             min_value=0.0,
             max_value=100.0,
-            value=4.0
+            value=4.0,
+            step=1.0
         )
 
-    animal_count = st.number_input(
-        "Animal Count",
-        min_value=1,
-        max_value=10000,
-        value=10
+    farm_area = st.number_input(
+        "Farm Area (Acres)",
+        min_value=0.1,
+        max_value=10000.0,
+        value=5.0
     )
 
-    age = st.number_input(
-        "Animal Age (years)",
-        min_value=0.0,
-        max_value=30.0,
-        value=3.0
-    )
+    # =====================================================
+    # LIVESTOCK INFORMATION
+    # =====================================================
+
+    st.subheader("🐄 Animal Information")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        animal_count = st.number_input(
+            "Animal Count",
+            min_value=1,
+            max_value=10000,
+            value=10
+        )
+
+    with col2:
+
+        age = st.number_input(
+            "Animal Age (Years)",
+            min_value=0.0,
+            max_value=30.0,
+            value=3.0
+        )
 
     feed_type = st.selectbox(
         "Feed Type",
@@ -565,27 +629,21 @@ elif sector == "Livestock":
     # ANIMAL HEALTH
     # =====================================================
 
-    st.subheader("🐄 Animal Health")
+    st.subheader("❤️ Animal Health")
 
-    col1, col2 = st.columns(2)
+    body_condition = st.number_input(
+        "Body Condition Score",
+        min_value=0.0,
+        max_value=5.0,
+        value=2.5
+    )
 
-    with col1:
-
-        body_condition = st.number_input(
-            "Body Condition Score",
-            min_value=0.0,
-            max_value=5.0,
-            value=2.5
-        )
-
-    with col2:
-
-        mortality_rate = st.number_input(
-            "Mortality Rate (%)",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0
-        )
+    mortality_rate = st.number_input(
+        "Mortality Rate (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=0.0
+    )
 
     # =====================================================
     # ENVIRONMENT
@@ -599,6 +657,7 @@ elif sector == "Livestock":
 
         rainfall = st.number_input(
             "Rainfall (mm)",
+            min_value=0.0,
             value=50.0
         )
 
@@ -612,7 +671,7 @@ elif sector == "Livestock":
         )
 
     # =====================================================
-    # FEED INFORMATION
+    # FEED
     # =====================================================
 
     st.subheader("🌾 Feed Information")
@@ -623,6 +682,7 @@ elif sector == "Livestock":
 
         feed_quantity = st.number_input(
             "Feed Quantity (kg/day)",
+            min_value=0.0,
             value=30.0
         )
 
@@ -639,6 +699,7 @@ elif sector == "Livestock":
 
         feed_conversion = st.number_input(
             "Feed Conversion Ratio",
+            min_value=0.0,
             value=1.60
         )
 
@@ -649,10 +710,10 @@ elif sector == "Livestock":
     )
 
     # =====================================================
-    # DISEASE INFORMATION
+    # DISEASE
     # =====================================================
 
-    st.subheader("🦠 Livestock Disease Information")
+    st.subheader("🦠 Disease Information")
 
     disease_type = st.selectbox(
         "Disease Type",
@@ -665,10 +726,18 @@ elif sector == "Livestock":
         ]
     )
 
-    disease_onset = st.selectbox(
+    disease_onset_text = st.selectbox(
         "Disease Onset",
-        ["No", "Yes"]
+        [
+            "No",
+            "Yes"
+        ]
     )
+
+    if disease_onset_text == "Yes":
+        disease_onset = 1
+    else:
+        disease_onset = 0
 
     # =====================================================
     # PRODUCTIVITY
@@ -706,18 +775,22 @@ elif sector == "Livestock":
 
             "Farm_Age_Years": farm_age,
 
-            "Farm_Area_Acres": np.nan,
+            "Farm_Area_Acres": farm_area,
 
-            "Water_Temperature_C": np.nan,
+            "Water_Temperature_C":
+                np.nan,
 
-            "Water_pH": np.nan,
+            "Water_pH":
+                np.nan,
 
-            "Dissolved_Oxygen_mg_L": np.nan,
+            "Dissolved_Oxygen_mg_L":
+                np.nan,
 
-            "Ammonia_mg_L": np.nan,
+            "Ammonia_mg_L":
+                np.nan,
 
             "Stocking_Density_Animals_Per_Acre":
-                np.nan,
+                animal_count / farm_area,
 
             "Feed_Quantity_kg_Per_Day":
                 feed_quantity,
@@ -758,18 +831,10 @@ elif sector == "Livestock":
         }])
 
         # =================================================
-        # SELECT MODEL FEATURES
+        # REORDER COLUMNS
         # =================================================
 
-        try:
-
-            input_data = input_data[model_features]
-
-        except Exception as e:
-
-            st.error("❌ Error while preparing model input.")
-            st.error(str(e))
-            st.stop()
+        input_data = input_data[MODEL_FEATURES]
 
         # =================================================
         # MAKE PREDICTION
@@ -783,46 +848,31 @@ elif sector == "Livestock":
 
         except Exception as e:
 
-            st.error("❌ Model prediction failed.")
-            st.error(str(e))
+            st.error(
+                "❌ Model prediction failed."
+            )
 
-            st.write("### Input Data Sent to Model")
+            st.code(str(e))
+
+            st.write(
+                "### Data sent to the model"
+            )
 
             st.dataframe(input_data)
 
             st.stop()
 
         # =================================================
-        # SUCCESS MESSAGE
+        # DISPLAY RESULT
         # =================================================
 
         st.success(
             "✅ Livestock information submitted successfully!"
         )
 
-        # =================================================
-        # DISEASE INFORMATION
-        # =================================================
-
-        st.write("### 🦠 Disease Information")
-
         st.write(
-            f"**Disease Type:** {disease_type}"
+            "### 🎯 Disease Risk Assessment"
         )
-
-        st.write(
-            f"**Disease Onset:** {disease_onset}"
-        )
-
-        st.write(
-            f"**Mortality Rate:** {mortality_rate}%"
-        )
-
-        # =================================================
-        # RISK ASSESSMENT
-        # =================================================
-
-        st.write("### 🎯 Risk Assessment")
 
         if prediction.lower() == "low":
 
@@ -849,8 +899,24 @@ elif sector == "Livestock":
             )
 
         # =================================================
-        # DISEASE MESSAGE
+        # DISEASE DETAILS
         # =================================================
+
+        st.write(
+            "### 🦠 Disease Information"
+        )
+
+        st.write(
+            f"**Disease Type:** {disease_type}"
+        )
+
+        st.write(
+            f"**Disease Onset:** {disease_onset_text}"
+        )
+
+        st.write(
+            f"**Mortality Rate:** {mortality_rate}%"
+        )
 
         if disease_type == "No Disease":
 
