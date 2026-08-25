@@ -502,31 +502,32 @@ if sector == "Livestock":
             st.warning(
                 f"⚠️ Reported disease: {disease_type}"
             )
-        st.write("### 🎯 Risk Assessment")
+       st.write("### 🎯 Risk Assessment")
 
-        if prediction.lower() == "low":
+if prediction.lower() == "low":
 
-            st.success(
-                "🟢 **Risk Level: LOW**"
-            )
+    st.success(
+        "🟢 **Risk Level: LOW**"
+    )
 
-        elif prediction.lower() == "medium":
+elif prediction.lower() == "medium":
 
-            st.warning(
-                "🟡 **Risk Level: MEDIUM**"
-            )
+    st.warning(
+        "🟡 **Risk Level: MEDIUM**"
+    )
 
-        elif prediction.lower() == "high":
+elif prediction.lower() == "high":
 
-            st.error(
-                "🔴 **Risk Level: HIGH**"
-            )
+    st.error(
+        "🔴 **Risk Level: HIGH**"
+    )
 
-        else:
+else:
 
-            st.info(
-                f"Risk Level: {prediction}"
-            )
+    st.info(
+        f"Risk Level: {prediction}"
+    )
+
 
         # Disease message
 
