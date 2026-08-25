@@ -3,8 +3,18 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
-
 import streamlit as st
+
+# =========================================================
+# LOAD TRAINED MODEL
+# =========================================================
+
+MODEL_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "aquaculture_livestock_best_model_new.pkl"
+)
+
+model = joblib.load(MODEL_PATH)
 
 st.set_page_config(
     page_title="Aquaculture & Livestock Disease Risk Classification",
